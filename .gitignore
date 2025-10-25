@@ -1,6 +1,7 @@
-/node_modules
-/vendor
-/.idea
-.idea/
+node_modules/
 .env
-
+*.bak
+*.zip
+*.pka
+*.der
+*.save

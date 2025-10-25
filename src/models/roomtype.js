@@ -3,14 +3,20 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class RoomType extends Model {
     static associate(models) {
-      RoomType.belongsTo(models.Homestay, { foreignKey: "homestay_id" });
-      RoomType.hasMany(models.Booking, { foreignKey: "room_type_id" });
-      RoomType.hasMany(models.RoomTypeImage, { foreignKey: "room_type_id" });
+      RoomType.belongsTo(models.Homestay, { foreignKey: "homestay_id",
+    as: "Homestay" });
+      RoomType.hasMany(models.Booking, { foreignKey: "room_type_id",
+    as: "Bookings" });
+      RoomType.hasMany(models.RoomTypeImage, { foreignKey: "room_type_id",
+    as: "RoomTypeImages" });
       RoomType.belongsToMany(models.Service, {
         through: models.RoomTypeService,
         foreignKey: "room_type_id",
+        otherKey: "service_id",
+        as: "Services"
       });
-      RoomType.hasMany(models.Review, { foreignKey: "room_type_id" });
+      RoomType.hasMany(models.Review, { foreignKey: "room_type_id",
+    as: "Reviews" });
     }
   }
   RoomType.init(

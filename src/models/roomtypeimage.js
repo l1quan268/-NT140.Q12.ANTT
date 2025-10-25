@@ -3,7 +3,8 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class RoomTypeImage extends Model {
     static associate(models) {
-      RoomTypeImage.belongsTo(models.RoomType, { foreignKey: "room_type_id" });
+      RoomTypeImage.belongsTo(models.RoomType, { foreignKey: "room_type_id",
+    as: "RoomType" });
     }
   }
   RoomTypeImage.init(

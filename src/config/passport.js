@@ -4,24 +4,30 @@ const user_service = require("../services/user_service");
 const dotenv = require("dotenv");
 dotenv.config();
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL,
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        // Giả sử hàm `findOrCreateGoogleUser` sẽ tìm hoặc tạo người dùng mới
-        const user = await user_service.findOrCreateGoogleUser(profile);
-        return done(null, user); // Trả về user đã tìm thấy hoặc tạo mới
-      } catch (err) {
-        return done(err, null); // Nếu có lỗi, trả về lỗi
+// ✅ THÊM ĐIỀU KIỆN CHECK NÀY:
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          // Giả sử hàm `findOrCreateGoogleUser` sẽ tìm hoặc tạo người dùng mới
+          const user = await user_service.findOrCreateGoogleUser(profile);
+          return done(null, user); // Trả về user đã tìm thấy hoặc tạo mới
+        } catch (err) {
+          return done(err, null); // Nếu có lỗi, trả về lỗi
+        }
       }
-    }
-  )
-);
+    )
+  );
+  console.log("✅ Google OAuth enabled");
+} else {
+  console.log("⚠️  Google OAuth is disabled. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env to enable.");
+}
 
 // Serialize the user into the session (cần lưu id vào session)
 passport.serializeUser((user, done) => {

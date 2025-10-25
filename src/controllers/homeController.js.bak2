@@ -28,7 +28,6 @@ let getHomePage = async (req, res) => {
           as: "Services",
           through: { attributes: [] },
           required: false,
-          as: "Services",
         },
       ],
     });
@@ -133,29 +132,29 @@ let postLogin = async (req, res) => {
     const { email, password, "g-recaptcha-response": captcha } = req.body;
 
     // Kiểm tra captcha
-// DISABLED -     if (!captcha) {
-// DISABLED -       return res.render("Login/login.ejs", {
-// DISABLED -         error: "Vui lòng xác nhận CAPTCHA.",
-// DISABLED -         success: null,
-// DISABLED -       });
-// DISABLED -     }
-// DISABLED - 
-// DISABLED -     const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-// DISABLED -     const response = await axios.post(
-// DISABLED -       "https://www.google.com/recaptcha/api/siteverify",
-// DISABLED -       new URLSearchParams({
-// DISABLED -         secret: secretKey,
-// DISABLED -         response: captcha,
-// DISABLED -         remoteip: req.ip,
-// DISABLED -       })
-// DISABLED -     );
-// DISABLED - 
-// DISABLED -     if (!response.data.success) {
-// DISABLED -       return res.render("Login/login.ejs", {
-// DISABLED -         error: "Xác thực CAPTCHA thất bại.",
-// DISABLED -         success: null,
-// DISABLED -       });
-// DISABLED -     }
+    if (!captcha) {
+      return res.render("Login/login.ejs", {
+        error: "Vui lòng xác nhận CAPTCHA.",
+        success: null,
+      });
+    }
+
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+    const response = await axios.post(
+      "https://www.google.com/recaptcha/api/siteverify",
+      new URLSearchParams({
+        secret: secretKey,
+        response: captcha,
+        remoteip: req.ip,
+      })
+    );
+
+    if (!response.data.success) {
+      return res.render("Login/login.ejs", {
+        error: "Xác thực CAPTCHA thất bại.",
+        success: null,
+      });
+    }
 
     // Nếu captcha ok → kiểm tra đăng nhập
     const result = await user_service.handleUserLogin(email, password);
@@ -905,8 +904,6 @@ let getRoomDetail = async (req, res) => {
     );
 
     // Trả dữ liệu ra view
-    console.log("🖼️ DEBUG - room.RoomTypeImages:", room.RoomTypeImages);
-    console.log("🖼️ DEBUG - images var:", room.RoomTypeImages?.length);
     res.render("Detail_homestay/details_homestay.ejs", {
       room,
       images: room.RoomTypeImages,
@@ -1034,9 +1031,6 @@ let getRoomDetailBySlug = async (req, res) => {
       "✅ ROOM DETAIL BY SLUG - Reviews count:",
       formattedReviews.length
     );
-
-    console.log("🖼️ Images:", room.RoomTypeImages);
-    console.log("🖼️ Count:", room.RoomTypeImages?.length);
 
     res.render("Detail_homestay/details_homestay.ejs", {
       room,
@@ -1367,6 +1361,7 @@ let getBookedDates = async (req, res) => {
     const bookings = await db.Booking.findAll({
       where: {
         room_type_id: room_id,
+        payment_status: ["paid", "pending"],
         status: {
           [db.Sequelize.Op.notIn]: ["cancelled", "failed"],
         },
@@ -1457,7 +1452,8 @@ let getRoomsPaginated = async (req, res) => {
       offset,
       order: [["created_at", "DESC"]],
       include: [
-        { model: db.Homestay, as: "Homestay", attributes: ["address"], required: true },
+        { model: db.Homestay, attributes: ["address"], required: true },
+        as: "Homestay",
         {
           model: db.RoomTypeImage,
           as: "RoomTypeImages",
@@ -1465,7 +1461,8 @@ let getRoomsPaginated = async (req, res) => {
           where: { is_thumbnail: true },
           required: false,
         },
-        { model: db.Service, as: "Services", through: { attributes: [] }, required: false },
+        { model: db.Service, through: { attributes: [] }, required: false },
+        as: "Services",
       ],
     });
 

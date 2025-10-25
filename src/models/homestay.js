@@ -3,9 +3,18 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Homestay extends Model {
     static associate(models) {
-      Homestay.hasMany(models.RoomType, { foreignKey: "homestay_id" });
-      Homestay.hasMany(models.Booking, { foreignKey: "homestay_id" });
-      Homestay.hasMany(models.Review, { foreignKey: "homestay_id" });
+      Homestay.hasMany(models.RoomType, { 
+        foreignKey: "homestay_id",
+        as: "RoomTypes"
+      });
+      Homestay.hasMany(models.Booking, { 
+        foreignKey: "homestay_id",
+        as: "Bookings"
+      });
+      Homestay.hasMany(models.Review, { 
+        foreignKey: "homestay_id",
+        as: "Reviews"
+      });
     }
   }
   Homestay.init(

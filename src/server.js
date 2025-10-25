@@ -57,6 +57,6 @@ app.use("/admin", adminRoutes);
 connectDB();
 
 const port = process.env.PORT || 6969;
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Backend Nodejs is running on port: ${port}`);
 });
