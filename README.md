@@ -3,7 +3,7 @@
 ## 1. Clone repo về máy
 ```bash
 git clone https://github.com/l1quan268/-NT140.Q12.ANTT.git
-cd -NT140.Q12.ANTT
+cd ./-NT140.Q12.ANTT
 ```
 
 ## 2. Cài đặt Node.js & npm (nếu chưa có)
