@@ -19,12 +19,34 @@ sudo systemctl start mysql
 ```
 
 ## 4. Import database
+Nếu nhớ mật khẩu, hãy bỏ qua bước này.
+```bash
+sudo systemctl stop mysql
+sudo mysqld_safe --skip-grant-tables --skip-networking &
+```
+Mở MySQL:
+```bash
+mysql -u root
+```
+Đặt lại mật khẩu:
+```bash
+FLUSH PRIVILEGES;
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456';
+EXIT;
+```
+Khởi động lại dịch vụ:
+```bash
+sudo pkill mysqld
+sudo systemctl start mysql
+```
+Import database
 ```bash
 mysql -u root -p
 # Nhập password MySQL
+DROP DATABASE IF EXISTS booking_db;
 CREATE DATABASE booking_db;
 USE booking_db;
-SOURCE sweethome_24_5_2025.sql;
+SOURCE database_chuan_fixed.sql;
 EXIT;
 ```
 
@@ -39,7 +61,7 @@ cat > .env <<EOF
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_USER=root
-DB_PASS=your_mysql_password
+DB_PASSWORD=123456
 DB_NAME=booking_db
 EOF
 ```
@@ -49,7 +71,8 @@ EOF
 ```bash
 npm start
 ```
-Truy cập trang web tại: [http://localhost:3000](http://localhost:3000)
+Truy cập trang web tại:
+http://localhost:3000
 
 ---
 
