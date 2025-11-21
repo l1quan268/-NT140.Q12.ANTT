@@ -55,7 +55,7 @@ EXIT;
 npm install
 ```
 
-## 6. Tạo file .env với thông tin kết nối MySQL (KHÔNG push lên GitHub)
+## 6. Tạo file .env với thông tin kết nối MySQL 
 ```bash
 cat > .env <<EOF
 DB_HOST=127.0.0.1
